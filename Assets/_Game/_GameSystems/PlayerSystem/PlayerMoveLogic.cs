@@ -29,7 +29,7 @@ public class PlayerMoveLogic : MonoBehaviour
 
     private void PlayerMove(Vector3 direction)
     {
-        _playerRb.MovePosition(_playerRb.transform.position += direction * _playerSystem.palyerSpeed);
+        _playerRb.MovePosition((_playerRb.transform.position += direction * _playerSystem.palyerSpeed) * Time.deltaTime);
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         _playerRb.transform.rotation = lookRotation;
     }

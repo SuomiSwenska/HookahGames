@@ -6,6 +6,8 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
     private NavMeshAgent _meshAgent;
+    [SerializeField] private float _destroyDelay;
+    [SerializeField] private GameObject _explosionEffect;
     public Transform playerTransform;
 
     private void Awake()
@@ -42,5 +44,12 @@ public class Enemy : MonoBehaviour
         StopAllCoroutines();
         _meshAgent.enabled = false;
         GetComponent<Rigidbody>().AddForce((-transform.forward + transform.up * 2) * 5f, ForceMode.Impulse);
+        _explosionEffect.SetActive(true);
+    }
+
+    private IEnumerator DestroyCoroutine()
+    {
+        yield return new WaitForSeconds(_destroyDelay);
+        Destroy(gameObject);
     }
 }
