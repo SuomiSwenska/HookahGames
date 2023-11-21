@@ -2,6 +2,8 @@
 
 public class CameraFollower : MonoBehaviour
 {
+    private PlayerInput _playerInput;
+
     public float rotationSpeed = 2.0f;
 
     private bool isDragging = false;
@@ -10,6 +12,25 @@ public class CameraFollower : MonoBehaviour
     public Transform target;
     public float smoothSpeed = 0.125f;
     public Vector3 offset;
+
+    private bool _isMoved;
+
+    private void Awake()
+    {
+        _playerInput = FindObjectOfType<PlayerInput>();
+    }
+
+    private void OnEnable()
+    {
+        _playerInput.OnInput += MovedState;
+        _playerInput.OnStopInput += NotMovedState;
+    }
+
+    private void OnDisable()
+    {
+        _playerInput.OnInput -= MovedState;
+        _playerInput.OnStopInput -= NotMovedState;
+    }
 
     void LateUpdate()
     {
@@ -20,51 +41,53 @@ public class CameraFollower : MonoBehaviour
             transform.position = smoothedPosition;
 
 
-            //// Проверяем, есть ли касание экрана (для мобильных устройств)
-            //if (Input.touchCount > 0)
-            //{
-            //    Touch touch = Input.GetTouch(0);
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(_isMoved ? 1 : 0);
 
-            //    // Проверяем, находится ли касание в левой части экрана
-            //    if (touch.position.x < Screen.width * 0.5f)
-            //    {
-            //        if (touch.phase == TouchPhase.Began)
-            //        {
-            //            isDragging = true;
-            //            lastTouchPos = touch.position;
-            //        }
-            //        else if (touch.phase == TouchPhase.Moved && isDragging)
-            //        {
-            //            // Вычисляем величину свайпа по вертикали и горизонтали
-            //            float rotationX = (touch.position.y - lastTouchPos.y) * rotationSpeed * Time.deltaTime;
-            //            float rotationY = -(touch.position.x - lastTouchPos.x) * rotationSpeed * Time.deltaTime;
+                if (touch.position.x >= Screen.width * 0.5f)
+                {
+                    if (touch.phase == TouchPhase.Began)
+                    {
+                        isDragging = true;
+                        lastTouchPos = touch.position;
+                    }
+                    else if (touch.phase == TouchPhase.Moved && isDragging)
+                    {
+                        float rotationY = -(touch.position.x - lastTouchPos.x) * rotationSpeed * Time.deltaTime;
 
-            //            // Поворачиваем камеру в соответствии с величиной свайпа
-            //            RotateCamera(rotationX, rotationY);
+                        RotateCamera(rotationY);
 
-            //            lastTouchPos = touch.position;
-            //        }
-            //        else if (touch.phase == TouchPhase.Ended)
-            //        {
-            //            isDragging = false;
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    // Если не используется тач-экран, проверяем ввод с мыши
-            //    float rotationX = Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
-            //    float rotationY = -Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+                        lastTouchPos = touch.position;
+                    }
+                    else if (touch.phase == TouchPhase.Ended)
+                    {
+                        isDragging = false;
+                    }
+                }
+            }
+            else
+            {
+                float rotationY = -Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
 
-            //    // Поворачиваем камеру в соответствии с величиной ввода с мыши
-            //    RotateCamera(rotationX, rotationY);
-            //}
+                RotateCamera(rotationY);
+            }
         }
     }
 
-    private void RotateCamera(float x, float y)
+    private void MovedState(Vector3 direction)
     {
-        // Поворачиваем камеру вокруг осей X и Y
-        transform.Rotate(x, y, 0);
+        _isMoved = true;
+    }
+
+    private void NotMovedState()
+    {
+        _isMoved = false;
+    }
+
+
+    private void RotateCamera(float y)
+    {
+        transform.Rotate(0, y, 0);
     }
 }
