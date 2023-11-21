@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyLogic : MonoBehaviour
 {
     private PlayerSystem _playerSystem;
-    [SerializeField] private Enemy enemy;
+    [SerializeField] private List<Enemy> enemies;
 
     private bool _isAttack;
 
@@ -27,7 +27,10 @@ public class EnemyLogic : MonoBehaviour
     private void PlayerShootingHandler()
     {
         if (_isAttack) return;
-        enemy.StartPursue();
+        foreach (var item in enemies)
+        {
+            item.StartPursue();
+        }
         _isAttack = true;
     }
 }
