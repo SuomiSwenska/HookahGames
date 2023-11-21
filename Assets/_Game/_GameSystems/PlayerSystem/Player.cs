@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private Transform _rocketPoint;
     [SerializeField] private float _rocketForce;
+    [SerializeField] private float _deathPushForce;
 
     private ObjectsPool _objectsPool;
     private Rigidbody[] _ragdollRigidbodies;
@@ -23,9 +24,9 @@ public class Player : MonoBehaviour
         DisableRagdoll();
     }
 
-    public void Death()
+    public void Death(Vector3 killerPosition)
     {
-        ActivateRagdoll();
+        ActivateRagdoll(killerPosition);
     }
 
     private void DisableRagdoll()
@@ -38,7 +39,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void ActivateRagdoll()
+    private void ActivateRagdoll(Vector3 killerPosition)
     {
         GetComponent<Animator>().enabled = false;
 
@@ -52,7 +53,7 @@ public class Player : MonoBehaviour
         _rigidbody.detectCollisions = false;
         GetComponent<Collider>().enabled = false;
 
-        GetComponent<Rigidbody>().AddForce(-transform.forward * 350, ForceMode.Impulse);
+        _ragdollRigidbodies[1].AddForce((transform.position - killerPosition) * _deathPushForce, ForceMode.Impulse);
     }
 
     public void RocketLaunch()

@@ -4,15 +4,13 @@ public class CameraFollower : MonoBehaviour
 {
     private PlayerInput _playerInput;
 
-    public float rotationSpeed = 2.0f;
+    [SerializeField] private float rotationSpeed = 2.0f;
+    [SerializeField] private Transform target;
+    [SerializeField] private float smoothSpeed = 0.125f;
+    [SerializeField] private Vector3 offset;
 
     private bool isDragging = false;
     private Vector2 lastTouchPos;
-
-    public Transform target;
-    public float smoothSpeed = 0.125f;
-    public Vector3 offset;
-
     private bool _isMoved;
 
     private void Awake()

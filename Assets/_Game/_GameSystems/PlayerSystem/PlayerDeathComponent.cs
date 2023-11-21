@@ -13,6 +13,6 @@ public class PlayerDeathComponent : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.tag == "Enemy") player.Death();
+        if (collision.transform.tag == "Enemy") player.Death(collision.transform.position);
     }
 }
