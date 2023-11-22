@@ -5126,6 +5126,7 @@ MonoBehaviour:
   playerGO: {fileID: 159302297}
   palyerSpeed: 0.002
   fireDelay: 0.7
+  rotationLerpFactor: 5
   isMoved: 0
 --- !u!114 &1920480012
 MonoBehaviour:

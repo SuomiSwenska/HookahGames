@@ -8,6 +8,7 @@ public class PlayerSystem : MonoBehaviour
     public GameObject playerGO;
     public float palyerSpeed;
     public float fireDelay;
+    public float rotationLerpFactor;
 
     public bool isMoved;
 }
