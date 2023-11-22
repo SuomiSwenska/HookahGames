@@ -4,14 +4,15 @@ public class CameraFollower : MonoBehaviour
 {
     private PlayerInput _playerInput;
 
+    [SerializeField] private Transform cameraParentTransform;
     [SerializeField] private float rotationSpeed = 2.0f;
     [SerializeField] private Transform target;
     [SerializeField] private float smoothSpeed = 0.125f;
-    [SerializeField] private Vector3 offset;
 
     private bool isDragging = false;
     private Vector2 lastTouchPos;
     private bool _isMoved;
+    private bool _isMouseButtonDown;
 
     private void Awake()
     {
@@ -30,15 +31,15 @@ public class CameraFollower : MonoBehaviour
         _playerInput.OnStopInput -= NotMovedState;
     }
 
+    private void Update()
+    {
+        _isMouseButtonDown = Input.GetMouseButtonDown(0);
+    }
+
     void LateUpdate()
     {
         if (target != null)
         {
-            Vector3 desiredPosition = target.position + offset;
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-            transform.position = smoothedPosition;
-
-
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(_isMoved ? 1 : 0);
@@ -64,9 +65,9 @@ public class CameraFollower : MonoBehaviour
                     }
                 }
             }
-            else
+            else if(_isMouseButtonDown)
             {
-                float rotationY = -Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+                float rotationY = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
 
                 RotateCamera(rotationY);
             }
@@ -86,6 +87,6 @@ public class CameraFollower : MonoBehaviour
 
     private void RotateCamera(float y)
     {
-        transform.Rotate(0, y, 0);
+        cameraParentTransform.Rotate(0, y, 0);
     }
 }
