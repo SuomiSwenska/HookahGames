@@ -29,8 +29,9 @@ public class PlayerMoveLogic : MonoBehaviour
 
     private void PlayerMove(Vector3 direction)
     {
-        _playerRb.MovePosition((_playerRb.transform.position += direction * _playerSystem.palyerSpeed) * Time.deltaTime);
+        Vector3 nextPosition = Vector3.Lerp(_playerRb.transform.position, _playerRb.transform.position += direction * _playerSystem.palyerSpeed, Time.deltaTime);
+        _playerRb.MovePosition(nextPosition);
         Quaternion lookRotation = Quaternion.LookRotation(direction);
-        _playerRb.transform.rotation = lookRotation;
+        _playerRb.transform.rotation = Quaternion.Lerp(_playerRb.transform.rotation, lookRotation, Time.deltaTime * 5);
     }
 }
