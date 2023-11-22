@@ -9,10 +9,13 @@ public class CameraFollower : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float smoothSpeed = 0.125f;
 
+    private float firstClickPositionX;
     private bool isDragging = false;
     private Vector2 lastTouchPos;
     private bool _isMoved;
     private bool _isMouseButtonDown;
+    private bool _isPrevMouseButtonDown;
+    private bool _isReadyToRrotate;
 
     private void Awake()
     {
@@ -33,7 +36,7 @@ public class CameraFollower : MonoBehaviour
 
     private void Update()
     {
-        _isMouseButtonDown = Input.GetMouseButtonDown(0);
+        MouseInputHandler();
     }
 
     void LateUpdate()
@@ -65,12 +68,12 @@ public class CameraFollower : MonoBehaviour
                     }
                 }
             }
-            else if(_isMouseButtonDown)
-            {
-                float rotationY = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+            //else
+            //{
+            //    float rotationY = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
 
-                RotateCamera(rotationY);
-            }
+            //    RotateCamera(rotationY);
+            //}
         }
     }
 
@@ -82,6 +85,27 @@ public class CameraFollower : MonoBehaviour
     private void NotMovedState()
     {
         _isMoved = false;
+    }
+
+    private void MouseInputHandler()
+    {
+        _isMouseButtonDown = Input.GetMouseButton(0);
+
+        if (_isMouseButtonDown && !_isPrevMouseButtonDown && Input.mousePosition.x >= Screen.width * 0.5f)
+        {
+            firstClickPositionX = Input.GetAxis("Mouse X");
+            _isReadyToRrotate = true;
+        }
+
+        if (_isMouseButtonDown && _isReadyToRrotate)
+        {
+            float rotationY = (firstClickPositionX + Input.GetAxis("Mouse X")) * rotationSpeed * Time.deltaTime;
+
+            RotateCamera(rotationY);
+        }
+
+        if (!_isMouseButtonDown) _isReadyToRrotate = false;
+        _isPrevMouseButtonDown = _isMouseButtonDown;
     }
 
 

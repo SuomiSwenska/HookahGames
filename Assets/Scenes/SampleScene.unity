@@ -2249,7 +2249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraParentTransform: {fileID: 1614875306}
-  rotationSpeed: 2
+  rotationSpeed: 400
   target: {fileID: 159302299}
   smoothSpeed: 0.125
 --- !u!1 &979768583 stripped
